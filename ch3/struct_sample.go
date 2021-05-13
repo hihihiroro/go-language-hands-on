@@ -30,12 +30,11 @@ func main() {
 	fmt.Println(hanako)
 }
 
-func rev(md Mydata) Mydata {
-	od := md.Data
+func rev(md *Mydata) Mydata {
+	od := (*md).Data
 	nd := []int{}
 	for i := len(od) - 1; i >= 0; i-- {
 		nd = append(nd, od[i])
 	}
 	md.Data = nd
-	return md
 }
