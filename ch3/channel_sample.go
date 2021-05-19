@@ -14,6 +14,10 @@ func total(n int, c chan int) {
 
 func main() {
 	c := make(chan int)
+	go total(1000, c)
 	go total(100, c)
-	fmt.Println("total:", <-c)
+	go total(10, c)
+	x, y, z := <-c, <-c, <-c
+
+	fmt.Println(x, y, z)
 }
