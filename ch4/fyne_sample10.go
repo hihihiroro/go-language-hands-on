@@ -15,7 +15,7 @@ func main() {
 	w.SetContent(
 		container.NewVBox(
 			l,
-			widget.NewCard("Card", "",
+			widget.NewCard("Group", "",
 				ck1,
 			),
 			widget.NewButton("OK", func() {
