@@ -12,7 +12,7 @@ func main() {
 	w := a.NewWindow("Hello")
 	w.SetContent(
 		fyne.NewContainerWithLayout(
-//			layout.NewGridLayout(3),
+			//			layout.NewGridLayout(3),
 			layout.NewGridLayoutWithRows(3),
 			widget.NewButton("One", nil),
 			widget.NewButton("Two", nil),
