@@ -11,9 +11,7 @@ func main() {
 	wt := func(f *os.File, s string) {
 		_, er := f.WriteString(s + "\n")
 		if er != nil {
-			fmt.Println(er)
-			f.Close()
-			return
+			panic(er)
 		}
 	}
 
@@ -21,9 +19,11 @@ func main() {
 
 	f, er := os.OpenFile(fn, os.O_APPEND|os.O_CREATE|os.O_WRONLY, os.ModePerm)
 	if er != nil {
-		fmt.Println(er)
-		return
+		panic(er)
 	}
+	// defer close.
+	defer f.Close()
+
 	fmt.Println("*** start ***")
 	wt(f, "*** start ***")
 	for {
@@ -35,8 +35,4 @@ func main() {
 	}
 	wt(f, "*** end ***\n\n")
 	fmt.Println("*** end ***")
-	er = f.Close()
-	if er != nil {
-		fmt.Println(er)
-	}
 }
