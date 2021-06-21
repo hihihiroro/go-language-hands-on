@@ -1,6 +1,6 @@
 package main
 
-import(
+import (
 	"database/sql"
 	"io/ioutil"
 	"os"
@@ -16,7 +16,7 @@ import(
 	"fyne.io/fyne/v2/widget"
 	md "github.com/JohannesKaufmann/html-to-markdown"
 	"github.com/PuerkitoBio/goquery"
-	_"github.com/mattn/go-sqlite3"
+	_ "github.com/mattn/go-sqlite3"
 )
 
 func main() {
@@ -84,7 +84,7 @@ func main() {
 		cvtr := md.NewConverter("", true, nil)
 		mkdn, er := cvtr.ConvertString(html)
 		if err(er) {
-				return
+			return
 		}
 		edit.SetText(mkdn)
 		inf.SetText("get web data.")
@@ -182,4 +182,145 @@ func main() {
 	}
 
 	// quit function.
+	qf := func() {
+		dialog.ShowConfirm("Alert", "Quit allication?", func(f bool) {
+			a.Quit()
+		}, w)
+	}
+
+	tf := true
+
+	// change theme function.
+	cf := func() {
+		if tf {
+			a.Settings().SetTheme(theme.LightTheme())
+			inf.SetText("change to Light-Theme.")
+		} else {
+			a.Settings().SetTheme(theme.DarkTheme())
+			inf.SetText("change to Dark-Theme.")
+		}
+		tf = !tf
+	}
+
+	// create button function.
+	cbtn := widget.NewButton("Clear", func() {
+		nf()
+	})
+	wbtn := widget.NewButton("Get Web", func() {
+		wf()
+	})
+	fbtn := widget.NewButton("Find Data", func() {
+		ff()
+	})
+	ibtn := widget.NewButton("Get UD data", func() {
+		rid, er := strconv.Atoi(fnd.Text)
+		if err(er) {
+			return
+		}
+		idf(rid)
+	})
+	sbtn := widget.NewButton("Save data", func() {
+		sf()
+	})
+	xbtn := widget.NewButton("Export data", func() {
+		xf()
+	})
+
+	// create member function.
+	createMmember := func() *fyne.MainMenu {
+		return fyne.NewMainMenu(
+			fyne.NewMenu("File",
+				fyne.NewMenuItem("New", func() {
+					nf()
+				}),
+				fyne.NewMenuItem("Get Web", func() {
+					wf()
+				}),
+				fyne.NewMenuItem("Find", func() {
+					ff()
+				}),
+				fyne.NewMenuItem("Save", func() {
+					sf()
+				}),
+				fyne.NewMenuItem("Export", func() {
+					xf()
+				}),
+				fyne.NewMenuItem("Change Theme", func() {
+					cf()
+				}),
+				fyne.NewMenuItem("Quit", func() {
+					qf()
+				}),
+			),
+			fyne.NewMenu("Edit",
+				fyne.NewMenuItem("Cut", func() {
+					edit.TypedShortcut(
+						&fyne.ShortcutCut{
+							Clipboard: w.Clipboard()})
+					inf.SetText("Cut text.")
+				}),
+				fyne.NewMenuItem("Copy", func() {
+					edit.TypedShortcut(
+						&fyne.ShortcutCopy{
+							Clipboard: w.Clipboard()})
+					inf.SetText("Copy text.")
+				}),
+				fyne.NewMenuItem("Paste", func() {
+					edit.TypedShortcut(
+						&fyne.ShortcutCopy{
+							Clipboard: w.Clipboard()})
+					inf.SetText("Paste text.")
+				}),
+			),
+		)
+	}
+
+	// create toolbar function.
+	createToolbar := func() *widget.Toolbar {
+		return widget.NewToolbar(
+			widget.NewToolbarAction(
+				theme.DocumentCreateIcon(), func() {
+					nf()
+				}),
+			widget.NewToolbarAction(
+				theme.NavigateNextIcon(), func() {
+					wf()
+				}),
+			widget.NewToolbarAction(
+				theme.SearchIcon(), func() {
+					ff()
+				}),
+			widget.NewToolbarAction(
+				theme.DocumentSaveIcon(), func() {
+					sf()
+				}),
+		)
+	}
+
+	mb := createMenubar()
+	tb := createToolbar()
+
+	fc := widget.NewVBox(
+		tb,
+		widget.NewForm(
+			widget.NewFOrmItem(
+				"FIND", fnd,
+			),
+		),
+		widget.NewHBox(
+			cbtn, wbtn, fbtn, ibtn, sbtn, xbtn,
+		),
+	)
+
+	w.SetMainMenu(mb)
+	w.SetContent(
+		fyne.NewContainerWithLayout(
+			layout.NewBorderLayout(
+				fc, inf, nil, nil,
+			),
+			fc, inf, sc,
+		),
+	)
+	w.Resize(fyne.NewSize(500, 500))
+	w.ShowAndRun()
 }
