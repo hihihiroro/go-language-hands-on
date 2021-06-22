@@ -13,6 +13,7 @@ import (
 
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/app"
+	"fyne.io/fyne/v2/container"
 	"fyne.io/fyne/v2/widget"
 	md "github.com/JohannesKaufmann/html-to-markdown"
 	"github.com/PuerkitoBio/goquery"
@@ -24,7 +25,7 @@ func main() {
 	w := a.NewWindow("app")
 	a.Settings().SetTheme(theme.DarkTheme())
 	edit := widget.NewMultiLineEntry()
-	sc := widget.NewScrollContainer(edit)
+	sc := container.NewScroll(edit)
 	fnd := widget.NewEntry()
 	inf := widget.NewLabel("information bar.")
 
@@ -35,7 +36,7 @@ func main() {
 	}
 
 	// error check.
-	err := func(err error) bool {
+	err := func(er error) bool {
 		if er != nil {
 			inf.SetText(er.Error())
 			return true
@@ -45,7 +46,7 @@ func main() {
 
 	// open SQL and return DB
 	setDB := func() *sql.DB {
-		con, er := sql.OPen("sqlite3", "data.sqlite3")
+		con, er := sql.Open("sqlite3", "data.sqlite3")
 		if err(er) {
 			return nil
 		}
@@ -142,7 +143,7 @@ func main() {
 	}
 
 	// save function.
-	sd := func() {
+	sf := func() {
 		dialog.ShowConfirm("Alert", "Save data?", func(f bool) {
 			if f {
 				con := setDB()
@@ -151,9 +152,9 @@ func main() {
 				}
 				defer con.Close()
 
-				qry := "insert into md_data (title,url,markdown)" +
-					"values (?,?,?)"
-				_, er := con.Exec(qry, w.Title(), fnd.Text, editText)
+				qry := "insert into md_data (title,url,markdown) values (?,?,?)"
+
+				_, er := con.Exec(qry, w.Title(), fnd.Text, edit.Text)
 				if err(er) {
 					return
 				}
@@ -226,8 +227,8 @@ func main() {
 		xf()
 	})
 
-	// create member function.
-	createMmember := func() *fyne.MainMenu {
+	// create menubar function.
+	createMenubar := func() *fyne.MainMenu {
 		return fyne.NewMainMenu(
 			fyne.NewMenu("File",
 				fyne.NewMenuItem("New", func() {
@@ -300,14 +301,14 @@ func main() {
 	mb := createMenubar()
 	tb := createToolbar()
 
-	fc := widget.NewVBox(
+	fc := container.NewVBox(
 		tb,
 		widget.NewForm(
-			widget.NewFOrmItem(
+			widget.NewFormItem(
 				"FIND", fnd,
 			),
 		),
-		widget.NewHBox(
+		container.NewHBox(
 			cbtn, wbtn, fbtn, ibtn, sbtn, xbtn,
 		),
 	)
