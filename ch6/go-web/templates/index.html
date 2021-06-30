@@ -1,10 +1,3 @@
-<html>
-<htad>
-    <meta charset='utf-8'>
-    <title>Index</title>
-</htad>
-<body>
-    <h1>Index</h1>
-    <p>This is sample web page!</p>
-</body>
-</html>
+{{ template "header" .}}
+<p>{{ .Message }}</p>
+{{ template "footer" .}}
