@@ -1,4 +1,4 @@
-package main
+package my
 
 import (
 	"github.com/jinzhu/gorm"
@@ -31,8 +31,8 @@ type Group struct {
 }
 
 // Comment model.
-type Commnet struct {
-	gotm.Model
+type Comment struct {
+	gorm.Model
 	UserId  int
 	PostId  int
 	Message string
